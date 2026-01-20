@@ -4,9 +4,7 @@ Northeastern University - CS5610 Web Development
 
 ## Live Demo
 
-[View the deployed app here](https://YOUR_GITHUB_USERNAME.github.io/airbnb-listings-app/)
-
-*(Update the link above with your GitHub username after deploying)*
+[View the deployed app here](https://harshraj172.github.io/airbnb-listings-app/)
 
 ## About This Project
 
