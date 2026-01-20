@@ -3,804 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SF Airbnb Listings | Web Development Assignment</title>
-    <meta name="description" content="Browse 50 San Francisco Airbnb listings with search, filter, and favorites features">
-    <meta name="author" content="Harsh">
+    <title>Airbnb SF Listings</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- using bootstrap like we did in class -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root {
-            --airbnb-red: #FF5A5F;
-            --airbnb-dark: #484848;
-            --airbnb-light: #767676;
-        }
-
         body {
-            background-color: #f7f7f7;
-            font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
         }
 
-        /* Header Styles */
         .navbar {
-            background: white !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            background-color: #ff5a5f;
         }
 
         .navbar-brand {
-            color: var(--airbnb-red) !important;
+            color: white !important;
             font-weight: bold;
-            font-size: 1.5rem;
         }
 
-        .navbar-brand i {
-            margin-right: 8px;
-        }
-
-        /* Search & Filter Section */
-        .search-section {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-        }
-
-        .search-input {
-            border-radius: 24px;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--airbnb-red);
-            box-shadow: none;
-        }
-
-        .filter-btn {
-            border-radius: 24px;
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: white;
-            color: var(--airbnb-dark);
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            border-color: var(--airbnb-dark);
-            background: var(--airbnb-dark);
-            color: white;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding: 0 4px;
-        }
-
-        .stats-bar span {
-            color: var(--airbnb-light);
-            font-size: 0.9rem;
-        }
-
-        /* Listing Cards */
-        .listing-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
+        .card {
+            margin-bottom: 20px;
             height: 100%;
-            display: flex;
-            flex-direction: column;
         }
 
-        .listing-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
-        .listing-img-container {
-            position: relative;
-            padding-top: 66.67%;
-            overflow: hidden;
-        }
-
-        .listing-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .card-img-top {
+            height: 200px;
             object-fit: cover;
         }
 
-        .favorite-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
+        .card-title {
+            font-size: 1rem;
+            height: 48px;
+            overflow: hidden;
         }
 
-        .favorite-btn:hover {
-            transform: scale(1.1);
+        .card-text {
+            font-size: 0.85rem;
+            color: #666;
+            height: 60px;
+            overflow: hidden;
         }
 
-        .favorite-btn.active {
-            background: var(--airbnb-red);
-            color: white;
-        }
-
-        .favorite-btn i {
+        .price {
+            font-weight: bold;
+            color: #ff5a5f;
             font-size: 1.1rem;
         }
 
-        .listing-body {
-            padding: 16px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .listing-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--airbnb-dark);
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .listing-description {
-            font-size: 0.85rem;
-            color: var(--airbnb-light);
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
-        }
-
-        .listing-price {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--airbnb-dark);
-        }
-
-        .listing-price span {
-            font-weight: normal;
-            color: var(--airbnb-light);
-        }
-
-        /* Host Section */
-        .host-section {
+        .host-info {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            border-top: 1px solid #f0f0f0;
-            background: #fafafa;
+            padding: 10px;
+            background: #f9f9f9;
+            border-top: 1px solid #eee;
         }
 
         .host-img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            object-fit: cover;
-            margin-right: 12px;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .host-info {
-            flex-grow: 1;
+            margin-right: 10px;
         }
 
         .host-name {
             font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--airbnb-dark);
+            font-weight: 500;
         }
 
-        .host-badge {
+        .amenities {
             font-size: 0.75rem;
-            color: var(--airbnb-red);
-        }
-
-        /* Amenities */
-        .amenities-section {
-            padding: 12px 16px;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .amenities-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--airbnb-dark);
-            margin-bottom: 8px;
+            color: #888;
+            margin-top: 8px;
         }
 
         .amenity-tag {
-            display: inline-block;
-            background: #f0f0f0;
-            color: var(--airbnb-light);
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 0.75rem;
-            margin: 2px;
-        }
-
-        .amenities-more {
-            color: var(--airbnb-red);
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        /* Modal Styles */
-        .modal-header {
-            border-bottom: none;
-        }
-
-        .modal-title {
-            color: var(--airbnb-dark);
-            font-weight: 600;
-        }
-
-        .amenity-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .amenity-item {
-            background: #f7f7f7;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        /* Loading Spinner */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 400px;
-        }
-
-        .spinner-border {
-            color: var(--airbnb-red);
-            width: 3rem;
-            height: 3rem;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--airbnb-dark);
-            color: white;
-            padding: 40px 0;
-            margin-top: 60px;
-        }
-
-        footer a {
-            color: #ccc;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            color: white;
-        }
-
-        /* Creative Feature: Favorites Counter */
-        .favorites-counter {
-            position: relative;
-        }
-
-        .favorites-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--airbnb-red);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
+            background: #eee;
+            padding: 2px 8px;
             border-radius: 10px;
-            display: none;
+            margin: 2px;
+            display: inline-block;
         }
 
-        .favorites-badge.show {
-            display: block;
+        .search-box {
+            margin: 20px 0;
         }
 
-        /* No results message */
-        .no-results {
+        footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
             text-align: center;
-            padding: 60px 20px;
-            color: var(--airbnb-light);
-        }
-
-        .no-results i {
-            font-size: 4rem;
-            margin-bottom: 16px;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-house-heart-fill"></i>
-                SF Airbnb
-            </a>
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn filter-btn favorites-counter" id="showFavoritesBtn">
-                    <i class="bi bi-heart-fill text-danger"></i> Favorites
-                    <span class="favorites-badge" id="favoritesBadge">0</span>
-                </button>
-            </div>
+            <a class="navbar-brand" href="#">SF Airbnb Listings</a>
         </div>
     </nav>
 
-    <main class="container py-4">
-        <!-- Search and Filter Section -->
-        <section class="search-section">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-0">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control search-input border-start-0"
-                               id="searchInput" placeholder="Search by name, description, or amenities...">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="filter-btn" data-sort="default">
-                            <i class="bi bi-grid"></i> All
-                        </button>
-                        <button class="filter-btn" data-sort="price-low">
-                            <i class="bi bi-sort-down"></i> Price: Low to High
-                        </button>
-                        <button class="filter-btn" data-sort="price-high">
-                            <i class="bi bi-sort-up"></i> Price: High to Low
-                        </button>
-                        <button class="filter-btn" data-sort="superhost">
-                            <i class="bi bi-star-fill"></i> Superhosts
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <div class="container">
+        <h1 class="my-4">San Francisco Airbnb Listings</h1>
+        <p>Showing the first 50 listings loaded from JSON data</p>
 
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <span id="resultsCount">Loading listings...</span>
-            <span id="priceRange"></span>
+        <!-- search box - my creative addition -->
+        <div class="search-box">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search listings...">
         </div>
 
-        <!-- Listings Grid -->
-        <section id="listings" class="row g-4">
-            <!-- Loading state -->
-            <div class="loading">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </section>
-    </main>
+        <p id="count"></p>
 
-    <!-- Amenities Modal -->
-    <div class="modal fade" id="amenitiesModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">All Amenities</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="amenitiesList" class="amenity-list"></div>
-                </div>
-            </div>
+        <!-- listings will go here -->
+        <div class="row" id="listings">
+            <p>Loading...</p>
         </div>
     </div>
 
-    <!-- Favorites Modal -->
-    <div class="modal fade" id="favoritesModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-heart-fill text-danger"></i> Your Favorites</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="favoritesList" class="row g-3"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
     <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="bi bi-house-heart-fill"></i> SF Airbnb Listings</h5>
-                    <p class="text-muted">Web Development Assignment - Northeastern University</p>
-                    <p class="text-muted mb-0">Data loaded via AJAX using JavaScript fetch API</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-1"><strong>Features:</strong></p>
-                    <ul class="list-unstyled text-muted">
-                        <li><i class="bi bi-check"></i> 50 Listings via AJAX</li>
-                        <li><i class="bi bi-check"></i> Search & Filter</li>
-                        <li><i class="bi bi-check"></i> Favorites with Local Storage</li>
-                        <li><i class="bi bi-check"></i> Price Sorting</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <p>Web Development Assignment - Northeastern University</p>
+        <p>Data loaded using fetch API</p>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Main Application Module - using the revealing module pattern from class
-        const AirbnbApp = (function() {
-            // keeping track of state here
-            let allListings = [];
-            let displayedListings = [];
-            // load favorites from localStorage if any exist (cool that this persists!)
-            let favorites = new Set(JSON.parse(localStorage.getItem('airbnb_favorites') || '[]'));
-            let currentSort = 'default';
-            let showingFavoritesOnly = false;
+        // global variables
+        let allListings = [];
+        const listingsDiv = document.getElementById('listings');
+        const searchInput = document.getElementById('searchInput');
+        const countText = document.getElementById('count');
 
-            // grab all the DOM elements we need
-            const listingsContainer = document.getElementById('listings');
-            const searchInput = document.getElementById('searchInput');
-            const resultsCount = document.getElementById('resultsCount');
-            const priceRange = document.getElementById('priceRange');
-            const favoritesBadge = document.getElementById('favoritesBadge');
-            const showFavoritesBtn = document.getElementById('showFavoritesBtn');
-
-            // helper to turn "$187.00" into 187 so we can sort by price
-            function parsePrice(priceStr) {
-                return parseFloat(priceStr.replace(/[$,]/g, '')) || 0;
+        // function to create html for one listing card
+        function createListingCard(listing) {
+            // parse amenities - they come as a weird string format
+            let amenities = [];
+            try {
+                amenities = JSON.parse(listing.amenities.replace(/'/g, '"'));
+            } catch(e) {
+                amenities = [];
             }
 
-            // the amenities come as a weird string that looks like json but uses single quotes
-            // so we need to convert the quotes and then parse it
-            function parseAmenities(amenitiesStr) {
-                try {
-                    return JSON.parse(amenitiesStr.replace(/'/g, '"'));
-                } catch {
-                    return [];
-                }
+            // only show first 3 amenities
+            let amenitiesHtml = '';
+            for (let i = 0; i < Math.min(3, amenities.length); i++) {
+                amenitiesHtml += `<span class="amenity-tag">${amenities[i]}</span>`;
+            }
+            if (amenities.length > 3) {
+                amenitiesHtml += `<span class="amenity-tag">+${amenities.length - 3} more</span>`;
             }
 
-            // descriptions have html tags in them which we dont want to show
-            function cleanDescription(desc) {
-                if (!desc) return 'No description available';
-                return desc.replace(/<br\s*\/?>/gi, ' ')
-                          .replace(/<\/?b>/gi, '')
-                          .replace(/<[^>]*>/g, '')
-                          .trim();
+            // clean up description (remove html tags)
+            let desc = listing.description || 'No description';
+            desc = desc.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '');
+            if (desc.length > 150) {
+                desc = desc.substring(0, 150) + '...';
             }
 
-            // Generate listing card HTML
-            function getListingHTML(listing) {
-                const amenities = parseAmenities(listing.amenities);
-                const displayAmenities = amenities.slice(0, 4);
-                const isFavorite = favorites.has(listing.id);
-                const isSuperhost = listing.host_is_superhost === 't';
-
-                return `
-                    <div class="col-12 col-md-6 col-lg-4" data-listing-id="${listing.id}">
-                        <article class="listing-card">
-                            <div class="listing-img-container">
-                                <img src="${listing.picture_url}"
-                                     alt="${listing.name}"
-                                     class="listing-img"
-                                     loading="lazy"
-                                     onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
-                                <button class="favorite-btn ${isFavorite ? 'active' : ''}"
-                                        onclick="AirbnbApp.toggleFavorite(${listing.id})"
-                                        title="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
-                                    <i class="bi bi-heart${isFavorite ? '-fill' : ''}"></i>
-                                </button>
+            // build the card html
+            let html = `
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="${listing.picture_url}" class="card-img-top" alt="${listing.name}"
+                             onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+                        <div class="card-body">
+                            <h5 class="card-title">${listing.name}</h5>
+                            <p class="card-text">${desc}</p>
+                            <p class="price">${listing.price} / night</p>
+                            <div class="amenities">
+                                <strong>Amenities:</strong><br>
+                                ${amenitiesHtml}
                             </div>
-
-                            <div class="listing-body">
-                                <h3 class="listing-title">${listing.name}</h3>
-                                <p class="listing-description">${cleanDescription(listing.description)}</p>
-                                <div class="listing-price">
-                                    ${listing.price} <span>/ night</span>
-                                </div>
+                        </div>
+                        <div class="host-info">
+                            <img src="${listing.host_thumbnail_url}" class="host-img"
+                                 onerror="this.src='https://via.placeholder.com/40?text=H'">
+                            <div>
+                                <div class="host-name">${listing.host_name}</div>
+                                ${listing.host_is_superhost === 't' ? '<small style="color:#ff5a5f">★ Superhost</small>' : ''}
                             </div>
-
-                            <div class="host-section">
-                                <img src="${listing.host_thumbnail_url || listing.host_picture_url}"
-                                     alt="${listing.host_name}"
-                                     class="host-img"
-                                     onerror="this.src='https://via.placeholder.com/40?text=H'">
-                                <div class="host-info">
-                                    <div class="host-name">${listing.host_name}</div>
-                                    ${isSuperhost ? '<div class="host-badge"><i class="bi bi-star-fill"></i> Superhost</div>' : ''}
-                                </div>
-                            </div>
-
-                            <div class="amenities-section">
-                                <div class="amenities-title">Amenities</div>
-                                <div>
-                                    ${displayAmenities.map(a => `<span class="amenity-tag">${a}</span>`).join('')}
-                                    ${amenities.length > 4 ? `
-                                        <span class="amenities-more" onclick="AirbnbApp.showAmenities(${listing.id})">
-                                            +${amenities.length - 4} more
-                                        </span>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </article>
+                        </div>
                     </div>
-                `;
+                </div>
+            `;
+            return html;
+        }
+
+        // function to display listings on page
+        function displayListings(listings) {
+            listingsDiv.innerHTML = '';
+
+            if (listings.length === 0) {
+                listingsDiv.innerHTML = '<p>No listings found</p>';
+                countText.textContent = '0 listings';
+                return;
             }
 
-            // Render listings
-            function render(listings) {
-                if (listings.length === 0) {
-                    listingsContainer.innerHTML = `
-                        <div class="col-12 no-results">
-                            <i class="bi bi-search"></i>
-                            <h4>No listings found</h4>
-                            <p>Try adjusting your search or filters</p>
-                        </div>
-                    `;
-                } else {
-                    listingsContainer.innerHTML = listings.map(getListingHTML).join('');
-                }
-                updateStats(listings);
+            let html = '';
+            for (let i = 0; i < listings.length; i++) {
+                html += createListingCard(listings[i]);
+            }
+            listingsDiv.innerHTML = html;
+            countText.textContent = listings.length + ' listings';
+        }
+
+        // search function
+        function searchListings() {
+            let searchTerm = searchInput.value.toLowerCase();
+
+            if (searchTerm === '') {
+                displayListings(allListings);
+                return;
             }
 
-            // Update stats display
-            function updateStats(listings) {
-                const count = listings.length;
-                resultsCount.textContent = `${count} listing${count !== 1 ? 's' : ''} found`;
+            let filtered = [];
+            for (let i = 0; i < allListings.length; i++) {
+                let listing = allListings[i];
+                let name = listing.name.toLowerCase();
+                let desc = (listing.description || '').toLowerCase();
 
-                if (count > 0) {
-                    const prices = listings.map(l => parsePrice(l.price));
-                    const minPrice = Math.min(...prices);
-                    const maxPrice = Math.max(...prices);
-                    priceRange.textContent = `$${minPrice} - $${maxPrice} / night`;
-                } else {
-                    priceRange.textContent = '';
-                }
-            }
-
-            // Update favorites badge
-            function updateFavoritesBadge() {
-                favoritesBadge.textContent = favorites.size;
-                favoritesBadge.classList.toggle('show', favorites.size > 0);
-            }
-
-            // Filter and sort listings
-            function filterAndSort() {
-                const searchTerm = searchInput.value.toLowerCase();
-
-                let filtered = allListings.filter(listing => {
-                    // If showing favorites only
-                    if (showingFavoritesOnly && !favorites.has(listing.id)) {
-                        return false;
-                    }
-
-                    // Search filter
-                    if (searchTerm) {
-                        const name = (listing.name || '').toLowerCase();
-                        const desc = (listing.description || '').toLowerCase();
-                        const amenities = (listing.amenities || '').toLowerCase();
-                        const hostName = (listing.host_name || '').toLowerCase();
-
-                        return name.includes(searchTerm) ||
-                               desc.includes(searchTerm) ||
-                               amenities.includes(searchTerm) ||
-                               hostName.includes(searchTerm);
-                    }
-                    return true;
-                });
-
-                // Apply sort
-                switch (currentSort) {
-                    case 'price-low':
-                        filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
-                        break;
-                    case 'price-high':
-                        filtered.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
-                        break;
-                    case 'superhost':
-                        filtered = filtered.filter(l => l.host_is_superhost === 't');
-                        break;
-                }
-
-                displayedListings = filtered;
-                render(filtered);
-            }
-
-            // add or remove from favorites when heart is clicked
-            function toggleFavorite(listingId) {
-                if (favorites.has(listingId)) {
-                    favorites.delete(listingId);
-                } else {
-                    favorites.add(listingId);
-                }
-
-                // save to localStorage so favorites persist after refresh
-                // had to convert Set to array since localStorage only stores strings
-                localStorage.setItem('airbnb_favorites', JSON.stringify([...favorites]));
-
-                // Update UI
-                const card = document.querySelector(`[data-listing-id="${listingId}"] .favorite-btn`);
-                if (card) {
-                    card.classList.toggle('active');
-                    card.querySelector('i').classList.toggle('bi-heart');
-                    card.querySelector('i').classList.toggle('bi-heart-fill');
-                }
-
-                updateFavoritesBadge();
-
-                // If showing favorites and we removed one, refresh
-                if (showingFavoritesOnly) {
-                    filterAndSort();
+                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                    filtered.push(listing);
                 }
             }
+            displayListings(filtered);
+        }
 
-            // Show all amenities modal
-            function showAmenities(listingId) {
-                const listing = allListings.find(l => l.id === listingId);
-                if (!listing) return;
+        // main function to load data
+        async function loadListings() {
+            try {
+                // fetch the json file
+                let response = await fetch('./airbnb_sf_listings_500.json');
+                let data = await response.json();
 
-                const amenities = parseAmenities(listing.amenities);
-                const amenitiesList = document.getElementById('amenitiesList');
+                // get first 50 listings
+                allListings = data.slice(0, 50);
 
-                amenitiesList.innerHTML = amenities
-                    .map(a => `<div class="amenity-item"><i class="bi bi-check-circle text-success"></i> ${a}</div>`)
-                    .join('');
+                // display them
+                displayListings(allListings);
 
-                const modal = new bootstrap.Modal(document.getElementById('amenitiesModal'));
-                modal.show();
+            } catch (error) {
+                console.log('Error loading data:', error);
+                listingsDiv.innerHTML = '<p class="text-danger">Error loading listings. Make sure JSON file exists.</p>';
             }
+        }
 
-            // Show favorites modal
-            function showFavorites() {
-                const favoriteListings = allListings.filter(l => favorites.has(l.id));
-                const favoritesList = document.getElementById('favoritesList');
+        // event listener for search
+        searchInput.addEventListener('input', searchListings);
 
-                if (favoriteListings.length === 0) {
-                    favoritesList.innerHTML = `
-                        <div class="col-12 text-center text-muted py-4">
-                            <i class="bi bi-heart" style="font-size: 3rem;"></i>
-                            <p class="mt-2">No favorites yet. Click the heart icon on listings to add them!</p>
-                        </div>
-                    `;
-                } else {
-                    favoritesList.innerHTML = favoriteListings.map(listing => `
-                        <div class="col-6">
-                            <div class="d-flex align-items-center gap-3 p-2 bg-light rounded">
-                                <img src="${listing.picture_url}"
-                                     alt="${listing.name}"
-                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;"
-                                     onerror="this.src='https://via.placeholder.com/60?text=No+Image'">
-                                <div class="flex-grow-1">
-                                    <div class="fw-bold small">${listing.name.substring(0, 40)}...</div>
-                                    <div class="text-muted small">${listing.price}/night</div>
-                                </div>
-                                <button class="btn btn-sm btn-outline-danger"
-                                        onclick="AirbnbApp.toggleFavorite(${listing.id}); AirbnbApp.showFavorites();">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                const modal = new bootstrap.Modal(document.getElementById('favoritesModal'));
-                modal.show();
-            }
-
-            // this is the main AJAX function - uses fetch and async/await like we did in class
-            async function loadData() {
-                try {
-                    // fetch the json file
-                    const response = await fetch('./airbnb_sf_listings_500.json');
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch listings');
-                    }
-
-                    // parse the json
-                    const data = await response.json();
-
-                    // assignment says first 50 listings so we slice here
-                    allListings = data.slice(0, 50);
-                    displayedListings = [...allListings];
-
-                    // draw everything on the page
-                    render(allListings);
-                    updateFavoritesBadge();
-
-                } catch (error) {
-                    // show error if something goes wrong (usually means file path is wrong)
-                    console.error('Error loading data:', error);
-                    listingsContainer.innerHTML = `
-                        <div class="col-12 text-center text-danger py-5">
-                            <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
-                            <h4 class="mt-3">Error Loading Listings</h4>
-                            <p>Please make sure the JSON file is in the correct location.</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // Initialize event listeners
-            function initEventListeners() {
-                // Search input
-                searchInput.addEventListener('input', () => {
-                    filterAndSort();
-                });
-
-                // Sort/Filter buttons
-                document.querySelectorAll('.filter-btn[data-sort]').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        // Update active state
-                        document.querySelectorAll('.filter-btn[data-sort]').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-
-                        currentSort = btn.dataset.sort;
-                        showingFavoritesOnly = false;
-                        showFavoritesBtn.classList.remove('active');
-                        filterAndSort();
-                    });
-                });
-
-                // Show favorites button
-                showFavoritesBtn.addEventListener('click', () => {
-                    showFavorites();
-                });
-            }
-
-            // Public API
-            return {
-                init: function() {
-                    initEventListeners();
-                    loadData();
-                },
-                toggleFavorite,
-                showAmenities,
-                showFavorites
-            };
-        })();
-
-        // Initialize app when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            AirbnbApp.init();
-        });
+        // load data when page loads
+        loadListings();
     </script>
+
 </body>
 </html>
